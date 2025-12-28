@@ -1,9 +1,6 @@
 /* ===== General Page - Dark Theme ===== */
 
-html, body{
-    overflow: hidden;
-    height: 100%;
-}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #0f111a, #1b1e2a);
