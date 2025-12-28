@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Identification System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+<div id="search-toast" class="search-toast">No records found!</div>
+
+
+<div class="header-band">
+    <h1>ID Records</h1>
+</div>
+
+
+<div id="confirm-overlay" class="confirm-overlay">
+    <div class="confirm-modal">
+        <h2>Confirm Deletion</h2>
+        <p id="confirm-main">Delete this record?</p>
+        <p class="confirm-sub">
+            This action cannot be undone.
+        </p>
+
+
+        <div class="confirm-actions">
+            <button id="cancel-btn" type="button">Cancel</button>
+            <button id="confirm-btn" type="button">Delete</button>
+        </div>
+    </div>
+</div>
+
+<div id="info-overlay" class="info-overlay hidden">
+    <div class="info-modal">
+        <h2 class="head-text">ID <span id="info-header-id"></span> Information</h2>
+
+    <div class="info-content">
+        <div class="info-item">
+            <span class="label">ID code:</span>
+            <span class="value"><span class="id-badge-info" id="info-id"></span></span> 
+            
+            <button class="copy-btn" data-copy="">
+                <i data-lucide="copy"></i>
+            </button>
+        
+
+        </div>
+
+        <div id="toastb" class="toastb">Copied to clipboard!</div>
+
+        <div class="info-item">
+            <span class="label">Name:</span>
+            <span class="value" id="info-name"></span>
+        </div>
+        <div class="info-item">
+            <span class="label">Age:</span>
+            <span class="value" id="info-age"></span>
+        </div>
+        <div class="info-item">
+            <span class="label">ARC:</span>
+            <span class="value" id="info-arc"></span>
+        </div>
+        <div class="info-item">
+            <span class="label">Link:</span>
+            <span class="value" id="info-link"></span>
+        </div>
+        <div class="info-item">
+            <span class="label">Phone:</span>
+            <span class="value" id="info-phone"></span>
+        </div>
+
+        <div class="info-actions">
+            <button id="info-close-btn">Close</button>
+        </div>
+
+
+    </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="top-bar">
+
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search by name or ID">
+            
+        </div>
+        
+
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+
+        });
+    </script>
+
+    <a href="{{ url_for('add') }}" class="add-btn">
+        <span class="plus">+</span>
+        <span class="text">Add New</span>
+    </a>
+</div>
+
+
+<table>
+    <thead>
+        <tr>
+            <th class="ID_b">ID</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>ARC</th>
+            <th>Phone</th>
+            <th>Link</th>
+            <th></th>
+            
+        </tr>
+    </thead>
+    <tbody>
+    {% for r in records %}
+        <tr class="clickable-row"
+            data-id="{{ r.id }}"
+            data-name="{{ r.name }}"
+            data-age="{{ r.age or '' }}"
+            data-arc="{{ r.arc | string | lower }}"
+            data-arc-link="{{ r.arc_link or '' }}"
+            data-phone="{{ r.phone or '' }}">
+
+            <td class="id-badge">{{ r.id }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.gender }}</td>
+            <td>{{ r.age or "-" }}</td>
+            <td>
+                {% if r.arc is not none %}
+                    {% if r.arc %}
+                        <span class="arc-badge arc-yes">Yes</span>
+                    {% else %}
+                        <span class="arc-badge arc-no">NO</span>
+                    {% endif %}
+                {% else %}
+                    <span class="arc-badge arc-na">Unavailable</span>
+                {% endif %}
+            </td>
+            <td>{{ r.phone or "-" }}</td>
+            <td>
+                {% if r.arc_link %}
+                    <a href="{{ r.arc_link }}" target="_blank">Link</a>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <!-- Edit -->
+                    <a href="{{ url_for('edit', record_id=r.id) }}" class="edit-btn">
+                        <i class="fas fa-pencil-alt"></i>
+                        <span data-lucide="edit-2"></span>
+                    </a>
+                    
+                    <!-- Delete -->
+                    <form method="post" action="{{ url_for('delete', record_id=r.id) }}" class="delete-form" data-name="{{ r.name }}">
+                        <button type="submit" class="delete-btn" data-name="{{ r.name }}">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div id="toast-d" class="toast hidden">
+    <span id="toast-textd"></span>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toast = document.getElementById("toast-d");
+            const text = document.getElementById("toast-textd");
+            text.textContent = "{{ messages[0] }}";
+            toast.classList.remove("hidden");
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.classList.add("hidden"), 300);
+            }, 3000);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.add('show'); // fade in
+
+        // Hide after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+    </script>
+  {% endif %}
+{% endwith %}
+
+
+
+
+
+<script>
+let formToSubmit = null;
+const overlay = document.getElementById('confirm-overlay');
+
+function openConfirm(name, form) {
+    formToSubmit = form;
+    document.getElementById('confirm-main').textContent = `Delete "${name}"?`;
+    overlay.classList.add('active');
+}
+
+function showDeleteToast(message) {
+    const toast = document.getElementById("toast-d");
+    const text = document.getElementById("toast-textd");
+
+    text.textContent = message;
+
+    toast.classList.remove("hidden");
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+            toast.classList.add("hidden");
+        }, 300);
+    }, 3000);
+}
+
+
+function closeConfirm() {
+    overlay.classList.remove('active');
+    formToSubmit = null;
+}
+
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+        e.preventDefault();
+        formToSubmit = btn.closest('form');
+        const name = btn.dataset.name || 'this record';
+        document.getElementById('confirm-main').textContent = `Delete "${name}"?`;
+        overlay.classList.add('active');
+    });
+});
+
+document.getElementById('cancel-btn').addEventListener('click', () => {
+    overlay.classList.remove('active');
+    formToSubmit = null;
+});
+
+document.getElementById('confirm-btn').addEventListener('click', () => {
+    if (formToSubmit) {
+        formToSubmit.submit();  // triggers actual deletion
+    }
+});
+
+
+const infoOverlay = document.getElementById('info-overlay');
+const infoClose = document.getElementById('info-close-btn');
+
+
+
+function closeInfoModal() {
+    infoOverlay.classList.remove('visible');
+}
+
+
+
+
+// Make entire row clickable for info modal
+// Make entire row clickable for info modal
+document.querySelectorAll('tbody tr').forEach(row => {
+    let isDragging = false;
+
+    // Track dragging on the row
+    row.addEventListener('mousedown', () => isDragging = false);
+    row.addEventListener('mousemove', () => isDragging = true);
+
+    row.addEventListener('click', (e) => {
+        // Ignore clicks on action buttons or links
+        if (e.target.closest('.action-buttons') || e.target.closest('button') || e.target.closest('a')) return;
+
+        // Only trigger modal if not dragging
+        if (isDragging) return;
+
+        // Populate info modal
+        document.getElementById('info-id').textContent = row.dataset.id;
+        document.getElementById('info-header-id').textContent = row.dataset.id;
+        document.getElementById('info-name').textContent = row.dataset.name;
+        document.getElementById('info-age').textContent = row.dataset.age || 'Not added';
+
+        const arcSpan = document.getElementById('info-arc');
+        if (row.dataset.arc === 'true') {
+            arcSpan.innerHTML = '<span class="arc-badge arc-yes">Yes</span>';
+        } else if (row.dataset.arc === 'false') {
+            arcSpan.innerHTML = '<span class="arc-badge arc-no">No</span>';
+        } else {
+            arcSpan.innerHTML = '<span class="arc-badge arc-na">Unavailable</span>';
+        }
+
+        document.getElementById('info-link').textContent = row.dataset.arcLink || 'Not added';
+        document.getElementById('info-phone').textContent = row.dataset.phone || 'Not added';
+
+        infoOverlay.classList.add('visible');
+
+        // Copy button
+        const copyBtn = infoOverlay.querySelector('.copy-btn');
+        copyBtn.onclick = () => {
+            navigator.clipboard.writeText(row.dataset.id).then(() => {
+                const toast = document.getElementById('toastb');
+                toast.textContent = "Copied to clipboard!";
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        };
+    });
+});
+
+
+
+
+function showCopyToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    // Hide after 2 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2000);
+}
+
+
+const toast = document.getElementById('toastb');
+
+document.querySelector('.copy-btn').addEventListener('click', function() {
+    const idText = document.getElementById('info-id').textContent;
+    navigator.clipboard.writeText(idText).then(() => {
+        showCopyToast("Copied to clipboard!");
+    });
+});
+
+
+
+// Close modal
+if (infoClose) {
+    infoClose.onclick = () => infoOverlay.classList.remove('visible');
+}
+
+document.getElementById('cancel-btn').addEventListener('click', closeConfirm);
+document.addEventListener('keydown', function(event){
+    if(event.key === 'Escape'){
+        closeConfirm();
+    }
+});
+
+document.getElementById('info-close-btn').addEventListener('click', closeConfirm);
+document.addEventListener('keydown', function(event){
+    if(event.key === 'Escape'){
+        closeInfoModal();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search-input");
+    const rows = document.querySelectorAll("tbody tr");
+    const toast = document.getElementById("search-toast");
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim().toLowerCase();
+        let foundAny = false;
+
+        rows.forEach(row => {
+            const name = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+            const id = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+
+            if (name.includes(query) || id.includes(query)) {
+                row.style.display = "";
+                foundAny = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        if (!query) {
+            // Show all rows if search cleared
+            rows.forEach(row => row.style.display = "");
+            toast.classList.remove("show");
+        } else if (!foundAny) {
+            // Show toast if nothing found
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 2000);
+        } else {
+            toast.classList.remove("show");
+        }
+    });
+});
+
+function showSearchToast(message) {
+    const toast = document.getElementById('search-toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+
+
+</script>
+
+</body>
+</html>

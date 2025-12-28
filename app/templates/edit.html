@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Record</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles-edit.css') }}">
+</head>
+<body>
+
+<div class="header-band">
+    <h1>Edit Record</h1>
+</div>
+
+
+<div class="para">
+    <p >Note: Gender cannot be changed once set.</p>
+</div>
+
+
+<form method="post" id="edit-form">
+
+    <label>Name:</label>
+    <input name="name" value="{{ record.name }}" required>
+
+    <label>Gender:</label>
+    <select name="gender" id="gender" required disabled>
+        <option value="Male" {% if record.gender == "Male" %}selected{% endif %}>Male</option>
+        <option value="Female" {% if record.gender == "Female" %}selected{% endif %}>Female</option>
+    </select>
+
+    <label >Age:</label>
+    <input type="number" name="age" value="{{ record.age or '' }}" min="0" max="55">
+
+    <label >Phone:</label>
+    <input name="phone" value="{{ record.phone or '' }}">
+
+    <div id="arc-container">
+        <label>ARC:</label>
+        <span class="{{ 'arc-yes' if record.arc else 'arc-no' }}">
+            {{ 'YES' if record.arc else 'NO' }}
+        </span>
+
+        <div id="arc-link-container" {% if not record.arc %}style="display:none;"{% endif %}>
+            <label>ARC Link:</label>
+            <input
+                name="arc_link"
+                value="{{ record.arc_link or ''}}"
+                placeholder="{{ 'Not added' if not record.arc_link else '' }}" 
+                {% if not record.arc %}readonly{% endif %}
+                >
+        </div>
+    </div>
+</form>
+
+<div class="action-buttons">
+    <button type="submit" form="edit-form">Save Changes</button>
+    <a href="/">Cancel</a>
+</div>
+
+
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="toast">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const gender = document.getElementById("gender");
+    const arcContainer = document.getElementById("arc-container");
+    const arcLink = document.getElementById("arc-link-container");
+
+    function updateARC() {
+        if (gender.value === "Female") {
+            arcContainer.style.display = "block";
+        } else {
+            arcContainer.style.display = "none";
+        }
+    }
+
+    // Initial state (VERY important)
+    updateARC();
+
+    gender.addEventListener("change", updateARC);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toasts = document.querySelectorAll('.toast');
+    toasts.forEach(toast => {
+        toast.classList.add('show'); // fade in
+        setTimeout(() => {
+            toast.classList.remove('show'); // fade out after 3s
+        }, 3000);
+    });
+});
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

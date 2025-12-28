@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Record</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles-add.css') }}">
+</head>
+<body>
+
+<div class="add-header-band">
+    <h1>ADD RECORD</h1>
+</div>
+
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="toast">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+<form method="post" class="add-form" id="add-form">
+    <label>Name:</label>
+    <input name="name" required>
+
+    <div class="custom-select-wrapper">
+        <label class="gen_lb">Gender:</label>
+        <div class="custom-select" id="gender-select">
+            <div class="selected">--select--</div>
+            <div class="options">
+                <div class="option" data-value="Male">Male</div>
+                <div class="option" data-value="Female">Female</div>
+            </div>
+        </div>
+        <!-- Hidden input to submit gender -->
+        <input type="hidden" name="gender" id="gender-input">
+    </div>
+
+    <div class="custom-select-wrapper" id="arc-wrapper" style="display:none;">
+        <label>ARC:</label>
+        <div class="custom-select" id="arc-select">
+            <div class="selected">No</div>
+            <div class="options">
+                <div class="option" data-value="no">No</div>
+                <div class="option" data-value="yes">Yes</div>
+            </div>
+        </div>
+        <input type="hidden" name="arc" id="arc-input" value="no">
+
+        <div id="arc-link-container" style="display: none; margin-top:8px;">
+            <input name="arc_link" placeholder="ARC Link (optional)">
+        </div>
+    </div>
+
+    <label>Age (optional):</label>
+    <input type="number" name="age" value="{{ record.age or '' }}" min="0" max="55">
+
+    <label>Phone (optional):</label>
+    <input name="phone">
+
+</form>
+
+<div class="add-action-buttons">
+    <button type="submit" form="add-form">Save</button>
+    <a href="/">Cancel</a>
+</div>
+
+
+<script>
+
+document.querySelectorAll('.custom-select').forEach(select => {
+    const selected = select.querySelector('.selected');
+    const optionsContainer = select.querySelector('.options');
+    const optionsList = select.querySelectorAll('.option');
+
+    selected.addEventListener('click', () => {
+        select.classList.toggle('open');
+        optionsContainer.style.display = select.classList.contains('open') ? 'flex' : 'none';
+    });
+
+    optionsList.forEach(option => {
+        option.addEventListener('click', () => {
+            selected.textContent = option.textContent;
+            select.classList.remove('open');
+            optionsContainer.style.display = 'none';
+
+            // ARC toggle logic
+            if(select.id === 'gender-select') {
+                document.getElementById('arc-wrapper').style.display = option.dataset.value === 'Female' ? 'flex' : 'none';
+            }
+
+            if(select.id === 'arc-select') {
+                document.getElementById('arc-link-container').style.display = 
+                option.dataset.value === 'yes' ? 'flex' : 'none';
+            }
+        });
+    });
+});
+
+document.addEventListener('click', e => {
+    document.querySelectorAll('.custom-select').forEach(select => {
+        if(!select.contains(e.target)) {
+            select.classList.remove('open');
+            select.querySelector('.options').style.display = 'none';
+        }
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toasts = document.querySelectorAll('.toast');
+    toasts.forEach(toast => {
+        toast.classList.add('show'); // fade in
+        setTimeout(() => {
+            toast.classList.remove('show'); // fade out after 3s
+        }, 3000);
+    });
+});
+
+//New ONe
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --------- Gender Select ---------
+    const genderSelect = document.getElementById("gender-select");
+    const genderHidden = document.getElementById("gender-input");
+    const genderSelected = genderSelect.querySelector(".selected");
+    const genderOptions = genderSelect.querySelectorAll(".option");
+    const arcWrapper = document.getElementById("arc-wrapper");
+
+    genderOptions.forEach(option => {
+        option.addEventListener("click", () => {
+            genderSelected.textContent = option.textContent;
+            genderHidden.value = option.dataset.value;
+
+            // Show ARC only if Female
+            if (option.dataset.value === "Female") {
+                arcWrapper.style.display = "block";
+            } else {
+                arcWrapper.style.display = "none";
+            }
+        });
+    });
+
+    // --------- ARC Select ---------
+    const arcSelect = document.getElementById("arc-select");
+    const arcSelected = arcSelect.querySelector(".selected");
+    const arcOptions = arcSelect.querySelectorAll(".option");
+    const arcInput = document.getElementById("arc-input");
+    const arcLinkContainer = document.getElementById("arc-link-container");
+
+    arcOptions.forEach(option => {
+        option.addEventListener("click", () => {
+            arcSelected.textContent = option.textContent;
+            arcInput.value = option.dataset.value;
+
+            // Show ARC link only if yes
+            if (option.dataset.value === "yes") {
+                arcLinkContainer.style.display = "block";
+            } else {
+                arcLinkContainer.style.display = "none";
+            }
+        });
+    });
+
+});
+
+
+</script>
+
+</body>
+</html>
