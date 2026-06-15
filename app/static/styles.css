@@ -552,6 +552,8 @@ table a:hover {
     padding: 4px 0;
     border-radius: 8px;
     background: rgba(255,255,255,0.05); 
+    max-width: 100%;
+
 }
 
 .info-item .label {
@@ -563,6 +565,33 @@ table a:hover {
 .info-item .value {
     color: #f8fafc;
     gap: 6px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    flex: 1;
+    min-width: 0;
+}
+
+.info-item .value[title]{
+    cursor: pointer;
+}
+
+#info-link {
+    text-decoration-thickness: 1px;
+    color: #63b3ed;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+#info-link:hover{
+    border-bottom-style: solid;
 }
 
 .head-text{
@@ -596,6 +625,74 @@ table a:hover {
     margin: 8px 0;
     font-size: 0.95rem;
 }
+
+
+.info-actions {
+    text-align: center;
+    margin-top: 12px;
+}
+
+#info-close-btn {
+    padding: 8px 20px;
+    border-radius: 999px; /* fully pill-shaped */
+    border: none;
+    background: rgba(255, 50, 50, 0.2); /* subtle red hint */
+    color: #ffeaea;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+
+#info-close-btn:hover {
+    background: rgba(255, 50, 50, 0.45); /* brighter red */
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255,50,50,0.6);
+}
+
+#info-close-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.info-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(102, 126, 234, 0.35); 
+    color: #90cdf4;                        
+    border: 1px solid rgba(102, 126, 234, 0.5); 
+    border: none;
+    border-radius: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+    height: 36px;
+}
+
+.info-btn:hover {
+    background: rgba(102, 126, 234, 0.55);
+    transform: translateY(-2px);
+}
+
+
+.id-badge-info{
+    display: inline-block;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 999px;
+    padding: 8px;
+    background: rgba(118, 75, 162, 0.25);
+    color: #b78de6;
+    border: 1px solid rgba(118, 75, 162, 0.5);
+    font-weight: 600;
+}
+
 
 .copy-btn {
     background: rgba(255, 255, 255, 0.08); 
@@ -682,71 +779,4 @@ table a:hover {
     pointer-events: none;
 }
 
-
-.info-actions {
-    text-align: center;
-    margin-top: 12px;
-}
-
-#info-close-btn {
-    padding: 8px 20px;
-    border-radius: 999px; /* fully pill-shaped */
-    border: none;
-    background: rgba(255, 50, 50, 0.2); /* subtle red hint */
-    color: #ffeaea;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-
-#info-close-btn:hover {
-    background: rgba(255, 50, 50, 0.45); /* brighter red */
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(255,50,50,0.6);
-}
-
-#info-close-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.info-btn{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(102, 126, 234, 0.35); 
-    color: #90cdf4;                        
-    border: 1px solid rgba(102, 126, 234, 0.5); 
-    border: none;
-    border-radius: 12px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.2s ease, transform 0.2s ease;
-    height: 36px;
-}
-
-.info-btn:hover {
-    background: rgba(102, 126, 234, 0.55);
-    transform: translateY(-2px);
-}
-
-
-.id-badge-info{
-    display: inline-block;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    border-radius: 999px;
-    padding: 8px;
-    background: rgba(118, 75, 162, 0.25);
-    color: #b78de6;
-    border: 1px solid rgba(118, 75, 162, 0.5);
-    font-weight: 600;
-}
 

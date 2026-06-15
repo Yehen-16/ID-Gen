@@ -64,7 +64,7 @@
         </div>
         <div class="info-item">
             <span class="label">Link:</span>
-            <span class="value" id="info-link"></span>
+            <a class="value" id="info-link" href="#" target="_blank" rel="noopener"></a>
         </div>
         <div class="info-item">
             <span class="label">Phone:</span>
@@ -316,7 +316,28 @@ document.querySelectorAll('tbody tr').forEach(row => {
             arcSpan.innerHTML = '<span class="arc-badge arc-na">Unavailable</span>';
         }
 
-        document.getElementById('info-link').textContent = row.dataset.arcLink || 'Not added';
+        const valueEl = document.getElementById('info-link');
+        valueEl.textContent = row.dataset.arcLink || 'Not added';
+        valueEl.title = valueEl.textContent;
+
+
+        const linkEl = document.getElementById('info-link');
+        const link = row.dataset.arcLink;
+
+        if (link) {
+            linkEl.textContent = link;
+            linkEl.href = link;
+            linkEl.title = link;
+            linkEl.style.pointerEvents = 'auto';
+            linkEl.style.opacity = '1';
+        } else {
+            linkEl.textContent = 'Not added';
+            linkEl.removeAttribute('href');
+            linkEl.style.pointerEvents = 'none';
+            linkEl.style.opacity = '0.6';
+        }
+
+
         document.getElementById('info-phone').textContent = row.dataset.phone || 'Not added';
 
         infoOverlay.classList.add('visible');
